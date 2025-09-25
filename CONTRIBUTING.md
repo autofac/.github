@@ -44,27 +44,26 @@ We try to make sure things can be developed on both Windows and Mac/Linux, thoug
 
 **Windows**:
 
-- Visual Studio 2019 or VS Code
+- Visual Studio or VS Code
 - .NET Core SDK (each repo has a `global.json` with the version required)
-- PowerShell 5+ / PowerShell Core
+- PowerShell Core
 
 **Mac**:
 
 - VS Code
 - .NET Core SDK (each repo has a `global.json` with the version required)
-- PowerShell 5+ / PowerShell Core
+- PowerShell Core
 - Mono - install the latest "Visual Studio channel" version; the standalone version or the one from Homebrew won't work.
 
 ### Build / Test
 
-Project codelines with scripted builds generally have a `build.ps1` script. This Powershell script will build, package, and execute tests.
+Builds currently vary across Autofac repositories, but generally fall into one of three categories:
 
-Some project codelines rely on convention-based builds so do not have a specific script. In these cases you will not see a `.ps1` or `.proj` file to execute. In these cases...
+- MSBuild: You will see `default.proj` and running `dotnet msbuild ./default.proj` will run the build.
+- Powershell: You will see `build.ps1` and running that in Powershell will run the build.
+- Solution: You will only see a `.sln` file and using `dotnet build NameOfSolution.sln` or `dotnet test NameOfSolution.sln` will run the associated task.
 
-- The build is executed by running it in Visual Studio or by executing `dotnet build <Solution>.sln` on the solution in the codeline root.
-- Unit tests can be run from the Visual Studio test explorer or by running `dotnet test <Solution.sln>`.
-
-Unit tests are written in XUnit and Moq. **Code contributions should include tests that exercise/demonstrate the contribution.**
+Unit tests are written in XUnit and NSubstitute/Moq. **Code contributions should include tests that exercise/demonstrate the contribution.**
 
 **Everything should build and test with zero errors and zero warnings.**
 
