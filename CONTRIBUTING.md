@@ -99,7 +99,7 @@ Core Autofac attempts to be as compatible as possible to allow as many clients t
 Integration packages should do their best to balance the need for upgrades with the need for functionality. Generally speaking:
 
 - Unless there's a technical need to take an upgrade to an integration package dependency, **don't**. That includes Autofac - don't require an upgrade to an integration package to force an upgrade to the core Autofac version.
-- Integration packages really only need to be compatible with the latest version of the framework with which they integrate. For example, the Autofac ASP.NET MVC integration _may_ require use of the latest ASP.NET MVC bits. There is no requirement to maintain backwards compatibility with every old version of ASP.NET MVC and no requirement to fork and maintain multiple branches of the integration in order to support all the ASP.NET MVC versions.
+- Integration packages really only need to be compatible with the latest version of the framework with which they integrate. For example, the Autofac ASP.NET MVC integration *may* require use of the latest ASP.NET MVC bits. There is no requirement to maintain backwards compatibility with every old version of ASP.NET MVC and no requirement to fork and maintain multiple branches of the integration in order to support all the ASP.NET MVC versions.
 
 Again, the goal is to be as compatible with as many things for as long as possible.
 
