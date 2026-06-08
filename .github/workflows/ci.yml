@@ -48,7 +48,7 @@ on:
 jobs:
   # Deduplicate the PR-vs-feature-branch double build. A push to a feature
   # branch that already has an open PR is skipped, because the pull_request
-  # event already covers it. Everything else (PRs, develop, master, tags)
+  # event already covers it. Everything else (PRs, develop, main, tags)
   # proceeds. Combined with cancel-in-progress concurrency in main.yml, this
   # ensures exactly one build runs per change and superseded runs are cancelled.
   gate:
