@@ -1,0 +1,168 @@
+name: Continuous Integration
+
+# Shared, reusable CI workflow for all Autofac library repositories.
+#
+# Consumed by each repo's .github/workflows/main.yml via:
+#
+#   jobs:
+#     ci:
+#       uses: autofac/.github/.github/workflows/ci.yml@main
+#       secrets: inherit
+#       with:
+#         solution: Autofac.sln
+#
+# Only `solution` is required. Repos that build on .NET Framework override
+# `runs-on: windows-latest` (and usually `dotnet-version: 10.0.x`).
+#
+# This workflow is intentionally self-contained (all jobs inlined) rather than
+# calling other reusable workflows with `uses: ./...`, because a `./` path
+# inside a reusable workflow resolves against the CONSUMER repo, not this one.
+
+on:
+  workflow_call:
+    inputs:
+      solution:
+        description: Solution file to format-check (e.g. Autofac.sln).
+        required: true
+        type: string
+      runs-on:
+        description: Runner image for build and format jobs.
+        required: false
+        type: string
+        default: ubuntu-latest
+      dotnet-version:
+        description: .NET SDK version(s) to install (newline-separated for multiple).
+        required: false
+        type: string
+        default: |
+          8.0.x
+          10.0.x
+    secrets:
+      CODECOV_TOKEN:
+        description: Token for uploading code coverage metrics to CodeCov.io.
+        required: false
+      NUGET_API_KEY:
+        description: Token for publishing packages to NuGet.
+        required: false
+
+jobs:
+  # Deduplicate the PR-vs-feature-branch double build. A push to a feature
+  # branch that already has an open PR is skipped, because the pull_request
+  # event already covers it. Everything else (PRs, develop, master, tags)
+  # proceeds. Combined with cancel-in-progress concurrency in main.yml, this
+  # ensures exactly one build runs per change and superseded runs are cancelled.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      should-build: ${{ steps.decide.outputs.should-build }}
+    steps:
+      - name: Decide whether to build
+        id: decide
+        uses: actions/github-script@v9
+        with:
+          script: |
+            // Always build for pull_request events and for non-feature pushes.
+            if (context.eventName !== 'push') {
+              core.info(`Event is ${context.eventName}; building.`);
+              core.setOutput('should-build', 'true');
+              return;
+            }
+            const ref = context.ref; // e.g. refs/heads/feature/foo or refs/tags/v1.2.3
+            if (!ref.startsWith('refs/heads/feature/')) {
+              core.info(`Push to ${ref} is not a feature branch; building.`);
+              core.setOutput('should-build', 'true');
+              return;
+            }
+            const branch = ref.replace('refs/heads/', '');
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${branch}`,
+            });
+            if (prs.length > 0) {
+              core.info(`Open PR #${prs[0].number} exists for ${branch}; skipping push build (PR build covers it).`);
+              core.setOutput('should-build', 'false');
+            } else {
+              core.info(`No open PR for ${branch}; building feature branch.`);
+              core.setOutput('should-build', 'true');
+            }
+
+  dotnet-format:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-build == 'true' }}
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+      - name: dotnet format
+        run: dotnet format ${{ inputs.solution }} --verify-no-changes
+
+  pre-commit:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-build == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+      - uses: pre-commit/action@v3.0.1
+
+  build:
+    needs: gate
+    if: ${{ needs.gate.outputs.should-build == 'true' }}
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+      - name: Build and test
+        run: dotnet msbuild ./default.proj
+      - name: Upload coverage
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: true
+          files: artifacts/logs/*/coverage.cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: packages
+          path: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg
+
+  # Publish beta packages (develop) and release packages (version tags).
+  publish:
+    needs:
+      - build
+      - dotnet-format
+      - pre-commit
+    if: ${{ github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Download package artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: packages
+          path: artifacts/packages
+      - name: Publish to GitHub Packages
+        run: |
+          dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/autofac/index.json"
+          dotnet nuget push ./artifacts/packages/*.nupkg --skip-duplicate --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+          dotnet nuget push ./artifacts/packages/*.snupkg --skip-duplicate --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to NuGet
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          dotnet nuget push ./artifacts/packages/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
