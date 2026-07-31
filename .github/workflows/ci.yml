@@ -110,6 +110,10 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
+      # Enable npm links to allow pre-commit to install hooks that generate
+      # symlinks.
+      - name: Enable npm links
+        run: npm config set install-links true
       - uses: pre-commit/action@v3.0.1
 
   build:
