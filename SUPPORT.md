@@ -8,7 +8,7 @@ There are several resources for getting help with Autofac.
 
 **[Questions? Ask on Stack Overflow!](https://stackoverflow.com/questions/tagged/autofac)** Tag your question `autofac` along with any other relevant tags. The project owners and contributors monitor Stack Overflow and answer questions there when we can... but you also get the value of the rest of the community that isn't just the project owners. _We will close questions that are filed as issues and direct you to Stack Overflow._
 
-**[Got something to discuss? Hit the forums!](https://groups.google.com/forum/#forum/autofac)** Stack Overflow isn't as good for speculative questions or discussion, so if you have something that doesn't fit the Q&A format, the forums may be the way to go.
+**[Got something to discuss? Hit the forums!](https://groups.google.com/g/autofac)** Stack Overflow isn't as good for speculative questions or discussion, so if you have something that doesn't fit the Q&A format, the forums may be the way to go.
 
 **Found a bug? File an issue.** If you found something that isn't working as expected and you can reproduce it, go to the repo associated with the component giving you trouble and file an issue. For example, if your issue is with ASP.NET WebAPI integration, file the issue in that repo, not in the core Autofac repo. _We may move or close the issue if you file it in the wrong repo._
 

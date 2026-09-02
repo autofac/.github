@@ -20,7 +20,7 @@ The Autofac Code of Conduct [is posted on GitHub](CODE_OF_CONDUCT.md). It is exp
 - **Design discussion.** For new features, some discussion on the issue will take place to determine if it's something that should be included with Autofac or be a user-supplied extension. For defects, discussion may happen around whether the issue is truly a defect or if the behavior is correct.
 - **Pull request.** Create [a pull request](https://help.github.com/articles/using-pull-requests/) on the `develop` branch of the repository to submit changes to the code based on the information in the issue. Pull requests need to pass the CI build and follow coding standards. See below for more on coding standards in use with Autofac. Note all pull requests should include accompanying unit tests to verify the work.
 - **Code review.** Some iteration may take place requiring updates to the pull request (e.g., to fix a typo or add error handling).
-- **Pull request acceptance.** The pull request will be accepted into the `develop` branch and pushed to `master` with the next release.
+- **Pull request acceptance.** The pull request will be accepted into the `develop` branch and ships from `main` with the next release.
 
 ## License
 
@@ -34,7 +34,7 @@ By contributing to Autofac, you assert that:
 
 ### Workflow
 
-Autofac and the associated integration libraries follow the [Gitflow workflow process](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) for handling releases. This means active development is done on the `develop` branch and we push to `master` when it's release time. **If you're creating a pull request or contribution, please do it on the `develop` branch.** We can then build, push to MyGet for testing, and release to NuGet when everything's verified.
+Autofac and the associated integration libraries follow the [Gitflow workflow process](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) for handling releases. Active development happens on the `develop` branch and releases ship from `main`. **If you're creating a pull request or contribution, please do it on the `develop` branch.** Builds from `develop` are published to [GitHub Packages](https://github.com/orgs/autofac/packages) so changes can be tested before a release. Owners: the release procedure is in the [maintainer guide](MAINTAINERS.md).
 
 We use [semantic versioning](https://semver.org/) for our package versions.
 
