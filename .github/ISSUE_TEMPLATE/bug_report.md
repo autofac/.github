@@ -14,7 +14,7 @@ assignees: ''
 
   We have some great troubleshooting and diagnostics docs! They can help you figure
   out what's going on - if you haven't checked them out lately, please do!
-  https://autofac.readthedocs.io/en/latest/advanced/debugging.html
+  https://docs.autofac.org/en/latest/troubleshooting/index.html
 -->
 
 ## Describe the Bug
