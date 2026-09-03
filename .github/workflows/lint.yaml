@@ -1,0 +1,23 @@
+name: Lint
+
+# ci.yml in this repo is a reusable workflow for the library repos and never
+# runs here, so this repo's own Markdown needs a workflow of its own.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run linters
+        run: pre-commit run --all-files
