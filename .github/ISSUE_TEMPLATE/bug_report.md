@@ -15,15 +15,19 @@ assignees: ''
   We have some great troubleshooting and diagnostics docs! They can help you figure
   out what's going on - if you haven't checked them out lately, please do!
   https://docs.autofac.org/en/latest/troubleshooting/index.html
+
+  Keep it short. A failing test and the full stack trace tell us more than a
+  long explanation. If an AI tool helped you investigate, report only what you
+  confirmed yourself.
 -->
 
 ## Describe the Bug
 
-<!-- A clear and concise description of what the bug is. -->
+<!-- One or two sentences: what happened. -->
 
 ## Steps to Reproduce
 
-<!-- Tell us how to reproduce the issue. Ideally provide a failing unit test. -->
+<!-- The smallest failing unit test you can write. -->
 
 ```c#
 public class ReproTest
@@ -40,11 +44,11 @@ public class ReproTest
 
 ## Expected Behavior
 
-<!-- Describe what you expected to happen. -->
+<!-- One or two sentences: what you expected instead. -->
 
 ## Exception with Stack Trace
 
-<!-- If you see an exception, put the WHOLE THING here. -->
+<!-- If you see an exception, paste the WHOLE THING here as text. -->
 
 ```text
 Put the exception with stack trace here.
@@ -53,8 +57,8 @@ Put the exception with stack trace here.
 ## Dependency Versions
 
 Autofac: <!-- Fill in the version of core Autofac you're using. -->
-<!-- What other dependencies are you using? Names and versions. -->
+<!-- What other dependencies are you using? Names and versions, plus the .NET runtime. -->
 
 ## Additional Info
 
-<!-- Add any other context about the problem here. -->
+<!-- Anything else a maintainer needs. Delete this section if there is nothing. -->

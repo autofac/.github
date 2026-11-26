@@ -190,6 +190,21 @@ git push origin develop
 
 That moves the `develop` pointer without creating a commit, leaving both tips on the same hash.
 
+## AI Agent Instructions
+
+The rules coding agents follow in every Autofac repository come from `.apm/` in this repository, distributed with [APM](https://github.com/microsoft/apm). Each repository's `apm.yml` lists the rules it uses, and `AGENTS.md`, `CLAUDE.md`, `apm.lock.yaml`, `.claude/`, `.codex/`, `.agents/`, and `.github/instructions/` are generated from them. Never edit the generated files. They are overwritten on the next refresh.
+
+To change a rule:
+
+1. Edit it under `.apm/`, then run `./build.ps1` and `pre-commit run --all-files`.
+2. Try it against another repository before merging: `./tools/Update-AiInstruction.ps1 -Repository Autofac -Ref <your-branch>`. That leaves a commit in a local worktree to inspect. Discard it, because it pins `apm.yml` to your branch.
+3. Merge the change here.
+4. Propagate it: `./tools/Update-AiInstruction.ps1 -Push` opens one pull request per repository. Use `-WhatIf` first to see the plan, and `-Repository` to limit the run.
+
+The script needs PowerShell 7, `git`, `apm`, `pre-commit`, and `gh`, with every repository cloned side by side in one folder. Its parameter help covers the rest.
+
+To add a rule that only one repository needs, put it in that repository's own `.apm/instructions/` folder. `includes: auto` in its `apm.yml` compiles it alongside the shared rules. To leave a shared rule out of a repository, or to bring a new repository in, edit the lists at the top of `tools/Update-AiInstruction.ps1`.
+
 ## You Are Not Alone
 
 As an Autofac owner, you're part of a small community of folks who have all committed to providing ongoing support for a popular package consumed by people all over the world. It's a lot of responsibility and it can be overwhelming.
