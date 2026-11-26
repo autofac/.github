@@ -1,6 +1,6 @@
 name: github
 version: 1.0.0
-description: Shared AI agent instructions for the Autofac organization. Other repositories depend on files under .apm/; this one compiles its own .apm/ folder.
+description: Shared AI agent instructions for the Autofac organization.
 author: Autofac Project
 targets:
   - claude
