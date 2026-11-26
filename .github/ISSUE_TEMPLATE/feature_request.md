@@ -7,6 +7,13 @@ assignees: ''
 
 ---
 
+<!--
+  Keep it short. Features are weighed on how many Autofac users they help and
+  what they cost to maintain for years, so the problem matters more than the
+  solution. If an AI tool helped you write this, trim it to what you would say
+  yourself.
+-->
+
 ## Problem Statement
 
 <!--
@@ -25,10 +32,9 @@ assignees: ''
 ## Alternatives You've Considered
 
 <!--
-  A clear and concise description of any alternative solutions or features
-  you've considered.
+  What you tried with the existing API, and why it was not enough.
 -->
 
 ## Additional Context
 
-<!-- Add any other context or information about the feature request here. -->
+<!-- Who else would benefit, and anything else a maintainer needs. -->

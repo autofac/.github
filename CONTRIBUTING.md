@@ -22,6 +22,12 @@ The Autofac Code of Conduct [is posted on GitHub](CODE_OF_CONDUCT.md). It is exp
 - **Code review.** Some iteration may take place requiring updates to the pull request (e.g., to fix a typo or add error handling).
 - **Pull request acceptance.** The pull request will be accepted into the `develop` branch and ships from `main` with the next release.
 
+## AI-Assisted Contributions
+
+You may use AI tools, but you are the author. Read, understand, and test every line before you submit it, and be ready to explain and change it yourself in review. Say in the pull request description that an AI tool helped. Do not add AI co-author trailers to commits.
+
+Every Autofac repository carries agent instructions generated from [the rules in this repository](.apm/instructions), and most coding agents read them automatically. Keep what you submit short: a maintainer reads every word.
+
 ## License
 
 By contributing to Autofac, you assert that:
