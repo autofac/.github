@@ -20,7 +20,7 @@ Applications we will never see depend on every public member, every default, and
 - Adding public API is a long-term commitment, not a convenience. Every new type, overload, or parameter needs tests, XML documentation, an entry in the documentation site, and support questions answered for years. Before adding one, show that the goal cannot be met with what is already public.
 - Keep implementation details `internal`. Tests reach them through `InternalsVisibleTo`, which leaves room to refactor without breaking anyone.
 
-When a change needs a breaking change, say so plainly in the pull request and why the break is worth it. Maintainers decide when a major version ships. Do not bump the version yourself.
+When a change has to break compatibility, say so plainly in the pull request, and say why the break is worth it. Maintainers decide when a major version ships. Do not bump the version yourself.
 
 ## Make It Work, Don't Make It Optional
 
