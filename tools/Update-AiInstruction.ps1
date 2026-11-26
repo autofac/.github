@@ -226,9 +226,9 @@ function Set-ApmManifest {
     $lines.Add("name: $($Name.TrimStart('.').ToLowerInvariant())")
     $lines.Add('version: 1.0.0')
     if ($Name -eq '.github') {
-        $lines.Add('description: Shared AI agent instructions for the Autofac organization. Other repositories depend on files under .apm/; this one compiles its own .apm/ folder.')
+        $lines.Add('description: Shared AI agent instructions for the Autofac organization.')
     } else {
-        $lines.Add("description: AI agent instructions for $Name, generated from autofac/.github by tools/Update-AiInstruction.ps1 there.")
+        $lines.Add("description: AI agent instructions for $Name.")
     }
 
     $lines.Add('author: Autofac Project')
