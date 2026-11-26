@@ -315,10 +315,31 @@ function Update-Repository {
         Add-MissingLine -Path (Join-Path -Path $worktree -ChildPath '.gitattributes') -Line $gitAttributes -Marker $gitAttributesMarker
 
         if ($isRefresh) {
+            # APM will not overwrite a generated copy of this repository's own .apm/ content without a
+            # local receipt, which a fresh clone never has, and exits 0 when it skips one. The copies are
+            # generated, so delete them and let APM write them again.
+            $inLocalFiles = $false
+            foreach ($line in Get-Content -LiteralPath $lockPath) {
+                # The lock writes list items at column 0, so test for one before treating a line as a new key.
+                if ($line -match '^- (.+)$') {
+                    if (-not $inLocalFiles) {
+                        continue
+                    }
+
+                    $generated = Join-Path -Path $worktree -ChildPath $Matches[1].Trim()
+                    if (Test-Path -LiteralPath $generated -PathType Leaf) {
+                        Remove-Item -LiteralPath $generated -Force
+                    }
+                } elseif ($line -match '^\S') {
+                    $inLocalFiles = $line -eq 'local_deployed_files:'
+                }
+            }
+
             Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('update', '--yes') | Out-Null
-        } else {
-            Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('install') | Out-Null
         }
+
+        # update moves the lock to the latest shared rules but does not redeploy local content; install does both.
+        Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('install') | Out-Null
 
         # A single root AGENTS.md. The default places one in every source folder an instruction's pattern matches.
         Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('compile', '--clean', '--single-agents') | Out-Null
