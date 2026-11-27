@@ -23,7 +23,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
+  content_hash: sha256:6e6f6021e050bd272071eee4d8dc0f3d848bf48ac4f77769c203925d7e8ce737
 - kind: project-relative
   target: claude
   value: .claude/rules/github-actions.md
@@ -122,7 +122,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
+  content_hash: sha256:1326f29aa83a3de29c4bb5968382f153d267e2cb11c72b82ccff257a5997ff5d
 - kind: project-relative
   target: copilot
   value: .github/instructions/documentation.instructions.md
@@ -220,7 +220,7 @@ local_deployed_files:
 local_deployed_file_hashes:
   .agents/skills/review-autofac-pull-request/SKILL.md: sha256:ce864eff079e9b275b1242cfdf5efef32f813eae403b47892634523ded44fb93
   .claude/agents/autofac-pull-request-reviewer.md: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
-  .claude/rules/csharp.md: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
+  .claude/rules/csharp.md: sha256:6e6f6021e050bd272071eee4d8dc0f3d848bf48ac4f77769c203925d7e8ce737
   .claude/rules/github-actions.md: sha256:4d21c6223dd893b35c08d26d9f8e6e14aab5eacc4df3def1caa3e22da1c238d8
   .claude/rules/markdown.md: sha256:c52dc6909725b9b1538a52e07b39f912239fe87715319515f428da3820a8555f
   .claude/rules/powershell.md: sha256:55cb8f0ce29f8e50fadc3683e24573ff909195e9d409c5b940f12aabbc67fb72
@@ -228,7 +228,7 @@ local_deployed_file_hashes:
   .codex/agents/autofac-pull-request-reviewer.toml: sha256:ef599e67fe13b9e53302b7d87403fe86d401ca474bdeafffc9c8fc941d608456
   .github/agents/autofac-pull-request-reviewer.agent.md: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
   .github/instructions/commit.instructions.md: sha256:3c5176805890fbf2fde74b36e2f7d403c2377d421cf3eaa23ca3872b94e248e4
-  .github/instructions/csharp.instructions.md: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
+  .github/instructions/csharp.instructions.md: sha256:1326f29aa83a3de29c4bb5968382f153d267e2cb11c72b82ccff257a5997ff5d
   .github/instructions/documentation.instructions.md: sha256:3b45d80a35bafa091470903d371357eb812b8adab3c1429b33428593d5903434
   .github/instructions/github-actions.instructions.md: sha256:a05cfe69e3d183641fcf3157c9b7940bc5a944b974de5b148b390cd416ab71b0
   .github/instructions/issues.instructions.md: sha256:01316573d66593d05f3eea876af1517d7e4125e72688889aa6d42de58fdd6bc1
