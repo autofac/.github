@@ -385,6 +385,10 @@ function Update-Repository {
 
         # A single root AGENTS.md. The default places one in every source folder an instruction's pattern matches.
         Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('compile', '--clean', '--single-agents') | Out-Null
+
+        # install writes a .claude/rules/ copy of each instruction the compiled AGENTS.md does not carry yet,
+        # and Claude Code loads both. Installing again now that AGENTS.md carries them retires the copies.
+        Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('install') | Out-Null
         Assert-LockPinned -Path $lockPath
 
         Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'git' -ArgumentList @('add', '--all') | Out-Null
