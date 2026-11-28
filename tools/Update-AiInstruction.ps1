@@ -208,6 +208,48 @@ function Add-MissingLine {
     [System.IO.File]::WriteAllText($Path, $text, [System.Text.UTF8Encoding]::new($false))
 }
 
+# Throws when a dependency in the lock has no resolved_commit. APM writes one without it, and exits 0,
+# when a GitHub API call fails, and the next refresh then refuses to replace the files it generated.
+function Assert-LockPinned {
+    param(
+        [string]$Path
+    )
+
+    $unpinned = [System.Collections.Generic.List[string]]::new()
+    $name = $null
+    $pinned = $true
+    foreach ($line in @(Get-Content -LiteralPath $Path) + '') {
+        if ($line -match '^- ' -or $line -notmatch '^ ') {
+            if ($null -ne $name -and -not $pinned) {
+                $unpinned.Add($name)
+            }
+
+            $name = $null
+            $pinned = $true
+            if ($line -match '^- repo_url:') {
+                $name = '?'
+                $pinned = $false
+            }
+
+            continue
+        }
+
+        if ($null -eq $name) {
+            continue
+        }
+
+        if ($line -match '^  name: (.+)$') {
+            $name = $Matches[1].Trim()
+        } elseif ($line -match '^  resolved_commit: \S') {
+            $pinned = $true
+        }
+    }
+
+    if ($unpinned.Count -gt 0) {
+        throw "apm.lock.yaml has no resolved_commit for $($unpinned -join ', '). APM could not resolve them, so rerun once the GitHub API is reachable."
+    }
+}
+
 # Writes apm.yml for a repository with the shared primitives it uses.
 function Set-ApmManifest {
     [CmdletBinding(SupportsShouldProcess)]
@@ -343,6 +385,7 @@ function Update-Repository {
 
         # A single root AGENTS.md. The default places one in every source folder an instruction's pattern matches.
         Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'apm' -ArgumentList @('compile', '--clean', '--single-agents') | Out-Null
+        Assert-LockPinned -Path $lockPath
 
         Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'git' -ArgumentList @('add', '--all') | Out-Null
         $staged = @(Invoke-NativeCommand -WorkingDirectory $worktree -FilePath 'git' -ArgumentList @('diff', '--cached', '--name-only', '--diff-filter=d'))
@@ -407,8 +450,17 @@ foreach ($tool in @('git', 'apm', 'pre-commit') + $(if ($Push.IsPresent) { @('gh
 }
 
 New-Item -Path $WorktreePath -ItemType Directory -Force -WhatIf:$false | Out-Null
-$results = foreach ($name in $Repository) {
-    Update-Repository -Name $name -WorkspacePath $WorkspacePath -WorktreePath $WorktreePath -BranchName $BranchName -Ref $Ref -Push:$Push.IsPresent
+
+# APM resolves github.com refs anonymously before trying a token. The anonymous limit of 60 requests an
+# hour runs out a few repositories into a run, so use the token from the start.
+$previousAuthFirst = $env:APM_GITHUB_AUTH_FIRST
+$env:APM_GITHUB_AUTH_FIRST = '1'
+try {
+    $results = foreach ($name in $Repository) {
+        Update-Repository -Name $name -WorkspacePath $WorkspacePath -WorktreePath $WorktreePath -BranchName $BranchName -Ref $Ref -Push:$Push.IsPresent
+    }
+} finally {
+    $env:APM_GITHUB_AUTH_FIRST = $previousAuthFirst
 }
 
 $results
